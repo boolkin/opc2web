@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link id="favicon" rel="shortcut icon" type="image/png" href="red.png" />
+	<meta charset="utf-8">
+	<title>Web monitor</title>
+	<script src="jquery-3.2.1.min.js"></script>
+	<style>
+	body {
+		background-color: #DAF7A6;
+	}
+	
+	.tagvals {
+		font-size: 18px;
+		font-weight: bold;
+		display: inline-block;
+	}
+	
+	.newdiv {
+		float: left;
+		width: 100px;
+		height: auto;
+		text-align: center;
+		background-color: #eeeeee;
+		margin-right: 1px;
+		margin-left: 2px;
+		margin-top: 3px;
+		-webkit-box-shadow: inset 0 0 3px #000;
+		-ms-box-shadow: inset 0 0 3px #000;
+		box-shadow: inset 0 0 3px #000;
+		text-align: center;
+	}
+	
+	.bigdiv {
+		background: #d3c7b1;
+		float: left;
+		overflow: auto;
+		border: 1px solid black;
+		overflow: hidden;
+		resize: both;
+		width: 160px;
+		height: 120px;
+		min-width: 105px;
+		min-height: 70px;
+		max-width: 900px;
+		max-height: 600px;
+	}
+	
+	.hd {
+		text-align: center;
+		font-weight: bold;
+		border: 1px solid #9a4832;
+		background-color: #c28f48;
+		-webkit-box-shadow: inset 0 0 3px #000;
+		-ms-box-shadow: inset 0 0 3px #000;
+		box-shadow: inset 0 0 3px #000;
+	}
+	
+	.ctrue {
+		background-color: green;
+		width: 20px;
+		height: 20px;
+		color: green;
+		display: inline-block;
+	}
+	
+	.cfalse {
+		background-color: red;
+		text-align: center;
+		width: 20px;
+		height: 20px;
+		color: red;
+		display: inline-block;
+	}
+	</style>
+	<script>
+	var getJSON = function(url, callback) {
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', url, true);
+		xhr.responseType = 'json';
+		xhr.onload = function() {
+			var status = xhr.status;
+			if(status == 200) {
+				callback(null, xhr.response);
+			} else {
+				callback(status);
+			}
+		};
+		xhr.send();
+	};
+	setInterval(function() {
+		getJSON('http://localhost:45455', function(err, data) {
+			var taglist = "";
+			var state = "red";
+			var speed = parseFloat(data.tag0.replace(",", ".")); // скорость передается нулевым тэгом
+			if(speed > 0) {
+				state = "green";
+				$("#favicon").attr("href", "green.png"); //меняется иконка сайта если скорость больше нуля
+			} else {
+				state = "red";
+				$("#favicon").attr("href", "red.png"); //меняется иконка сайта если скорость меньше нуля
+			}
+			for(key in data) {
+				let value = '';
+				var elem = document.getElementById(key); // проходимся по JSON строке и проверяем есть ли на странице элементы которые передаются с сервера 
+				if(elem) {
+					if(data[key] == "true") {
+						document.getElementById(key).className = "ctrue";
+						value = "T";
+					} else if(data[key] == "false") {
+						document.getElementById(key).className = "cfalse";
+						value = "F";
+					} else value = Math.round(parseFloat(data[key].replace(",", ".")));
+					document.getElementById(key).innerHTML = value; // если есть такой элемент с ключем, то записываем в него значение 
+					//if (key = "tag7") document.getElementById(key).innerHTML = data[key]; // Толщина, то есть 7 тэг нужно отображать без округления
+				} else {
+					taglist = taglist + "<span id='" + key + "' onmouseover = showid(this.id)>" + key + ":" + data[key] + " | </span> "; //если элемента нет, то создаем его внизу в специальном блоке 
+					tagspanel.innerHTML = taglist;
+				}
+			}
+			document.getElementById("pole0").style.backgroundColor = state;
+		});
+	}, 1000);
+	var i = 0; // Глобальная переменная котороя хранит в себе порядковый номер тэга который будет добален при следующем вызове функции addDiv
+	var j = 0;
+	// Функция добавления блока тэга, котороя вызывается при двойном щелчке по большому блоку
+	function addDiv(obj) {
+		let div = document.createElement('div');
+		div.className = "newdiv";
+		i = document.getElementById('tagindex').value;
+		div.innerHTML = "<span class='tagnames' contenteditable='true'>tagname" + i + "</span><br><div class='tagvals' id='tag" + i + "' onmouseover = showid(this.id)>" + i + "</div><span contenteditable='true'> mm</span>";
+		document.getElementById(obj).append(div);
+		i++;
+		document.getElementById('tagindex').value = i;
+	}
+	// Функция добавления большого блока куда будут помещаться блоки тэгов. Функция вызывается при клике по плюсику вверху страницы
+	function addBigDiv() {
+		let elements = document.querySelectorAll('div.bigdiv');
+		j = elements.length;
+		let last = document.getElementById(elements[elements.length - 1].id)
+		let div = document.createElement('div');
+		div.className = "bigdiv";
+		div.id = "pole" + j;
+		div.setAttribute('ondblclick', 'addDiv(this.id)');
+		div.setAttribute('oncontextmenu', 'moveleft(this.id);return false;');
+		div.setAttribute('onclick', 'colordiv(this, event)');
+		div.innerHTML = "<div class ='hd' contenteditable='true'>Header</div>";
+		last.after(div);
+	}
+
+	function savecode() {
+		localStorage.setItem('Web_blocks_opc', document.getElementById('workpanel').innerHTML);
+		alert("Сохранен на локальной машине");
+	}
+
+	function showtextarea() {
+		workpanel.innerHTML = "<textarea rows='10' cols='100' id='import'></textarea><br><input type='button' onclick='importcode ()' value='Импортировать'> <a target='_blank' href='http://localhost/server_screen.txt'> Взять экран с сервера</a> <br><a href='http://localhost/editor.html'> Назад</a> ";
+	}
+
+	function importcode() {
+		localStorage.setItem('Web_blocks_opc', document.getElementById('import').value);
+		SetTimeout(document.location.reload(true), 0);
+	}
+
+	function download(filename, text) {
+		var pom = document.createElement('a');
+		pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+		pom.setAttribute('download', filename);
+		if(document.createEvent) {
+			var event = document.createEvent('MouseEvents');
+			event.initEvent('click', true, true);
+			pom.dispatchEvent(event);
+		} else {
+			pom.click();
+		}
+	}
+
+	function colordiv(el, event) {
+		if(event.shiftKey == true) {
+			el.style.backgroundColor = document.getElementById("colorform").value;
+		}
+		return false;
+	}
+
+	function moveleft(divid) {
+		let thisdiv = document.getElementById(divid);
+		let contentBuf = thisdiv.innerHTML;
+		let styleBuf = thisdiv.getAttribute('style');
+		if(thisdiv.previousElementSibling != null) prevdiv = thisdiv.previousElementSibling;
+		else prevdiv = thisdiv.nextElementSibling;
+		thisdiv.innerHTML = prevdiv.innerHTML;
+		thisdiv.setAttribute('style', prevdiv.getAttribute('style'));
+		prevdiv.innerHTML = contentBuf;
+		prevdiv.setAttribute('style', styleBuf);
+		return false;
+	}
+
+	function showid(elem) {
+		document.getElementById('idfield').innerHTML = elem;
+	}
+	</script>
+</head>
+
+<body> <a href="http://localhost/">На Главную</a>
+	<input type="button" onclick="addBigDiv()" value="+">
+	<input type="button" onclick="savecode()" value="Сохранить экран">
+	<input type="button" onclick="localStorage.removeItem('Web_blocks_opc');document.location.reload(true);" value="Удалить сохранение"> <a style="padding: 5px 12px; display: inline-block; background-color: #b54502; color: #fff; border-radius: 5px; border: 1px solid #944110; text-decoration: none; font-family: arial, sans-serif; font-weight: bold; font-size: 10px;" href="javascript:for(var i=0; i<(document.getElementsByTagName('a')).length; i++) {(document.getElementsByTagName('a')[i]).style.pointerEvents = 'none';}function handler(e) {e = e || window.event;var target = e.target || e.srcElement;target.remove();document.removeEventListener('click', handler, false);cursor('default');for(var i=0; i<(document.getElementsByTagName('a')).length; i++) {(document.getElementsByTagName('a')[i]).style.pointerEvents = 'initial';}}document.addEventListener('click', handler, false);cursor('crosshair');function cursor(cur) { document.body.style.cursor = cur; }">Удалить элемент</a>
+	<input type="button" onclick="showtextarea()" value="Импортировать экран">
+	<input type="button" onclick="download('local_screen.txt', document.getElementById('workpanel').innerHTML.replace(/\s+/g, ' ').trim());" value="Экспортировать экран"> Индекс тега:
+	<input id="tagindex" style="width: 30px;" type="number" value="" /> Цвет блока:
+	<input id="colorform" style="width: 70px;" type="text" value="pink" /> <span id="idfield"></span>
+	<hr>
+	<div id='workpanel'>
+		<div class='bigdiv' id='pole0' ondblclick='addDiv(this.id)' oncontextmenu='moveleft(this.id);return false;' onclick='colordiv(this,event)'>
+			<div class='hd' contenteditable='true'>Header</div>
+		</div>
+	</div>
+	<div style="position:absolute; bottom:0; left:0;" id="tagspanel">tags</div>
+	<script>
+	// После загрузки всей страницы проверяем есть ли сохранненый экран в локальном хранилище и есть он есть то показываем его
+	if(localStorage.getItem('Web_blocks_opc') !== null) {
+		document.getElementById('workpanel').innerHTML = localStorage.getItem('Web_blocks_opc');
+	}
+	document.getElementById('tagindex').value = document.getElementsByClassName("newdiv").length;
+	</script>
+</body>
+
+</html>
