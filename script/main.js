@@ -134,10 +134,10 @@ function addListenerBigDiv() {
     [].forEach.call(elem, function(el) {
         el.addEventListener("contextmenu", function(event) {
             event.preventDefault();
-            var contextElement = document.getElementById("context-menu");
-            contextElement.style.top = event.offsetY + "px";
-            contextElement.style.left = event.offsetX + "px";
-            contextElement.classList.add("active");
+            var cm = document.querySelector("#context-menu");
+            cm.style.top = (event.clientY +cm.offsetHeight > window.innerHeight) ? window.innerHeight - cm.offsetHeight + "px" : event.clientY + "px";
+            cm.style.left = (event.clientX + cm.offsetWidth > window.innerWidth) ? window.innerWidth - cm.offsetWidth + "px" : event.clientX +"px";
+            cm.classList.add("active");
             cidel.innerHTML = "  Delete " + el.id;
             cicc.setAttribute('onclick', 'colordiv(' + el.id + ')');
             ciml.setAttribute('onclick', 'moveleft(\'' + el.id + '\')');
@@ -146,7 +146,9 @@ function addListenerBigDiv() {
         });
     });
 }
-
+//window.addEventListener("click", function(){
+//	document.getElementById("context-menu").classList.remove("active");	
+//});
 function addTagIdListener() {
     let elem = document.getElementsByClassName("tagvals");
     [].forEach.call(elem, function(el) {

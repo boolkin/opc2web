@@ -11,7 +11,7 @@
 	<script src="script/main.js"></script>
 </head>
 
-<body> <a href="http://localhost/">На Главную</a>
+<body>
 	<input type="button" onclick="addBigDiv()" value="+">
 	<input type="button" onclick="savecode()" value="Сохранить экран">
 	<input type="button" onclick="localStorage.removeItem('Web_blocks_opc');document.location.reload(true);" value="Удалить сохранение"> <a style="padding: 5px 12px; display: inline-block; background-color: #b54502; color: #fff; border-radius: 5px; border: 1px solid #944110; text-decoration: none; font-family: arial, sans-serif; font-weight: bold; font-size: 10px;" href="javascript:for(var i=0; i<(document.getElementsByTagName('a')).length; i++) {(document.getElementsByTagName('a')[i]).style.pointerEvents = 'none';}function handler(e) {e = e || window.event;var target = e.target || e.srcElement;target.remove();document.removeEventListener('click', handler, false);cursor('default');for(var i=0; i<(document.getElementsByTagName('a')).length; i++) {(document.getElementsByTagName('a')[i]).style.pointerEvents = 'initial';}}document.addEventListener('click', handler, false);cursor('crosshair');function cursor(cur) { document.body.style.cursor = cur; }">Удалить элемент</a>
@@ -34,7 +34,7 @@
 			<div class='hd' contenteditable='true'>Header</div>
 		</div>
 	</div>
-	<div style="position:absolute; bottom:0; left:0;" id="tagspanel">tags</div>
+	<div style="position:fixed; bottom:0; left:0;" id="tagspanel">tags</div>
 	<script>
 	// После загрузки всей страницы проверяем есть ли сохранненый экран в локальном хранилище и есть он есть то показываем его
 	if(localStorage.getItem('Web_blocks_opc') !== null) {
