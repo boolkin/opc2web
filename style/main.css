@@ -1,0 +1,66 @@
+body {	
+	background-color: #DAF7A6;
+}	
+	
+.tagvals {	
+	font-size: 18px;
+	font-weight: bold;
+	display: inline-block;
+}	
+	
+.newdiv {	
+	float: left;
+	width: 100px;
+	height: auto;
+	text-align: center;
+	background-color: #eeeeee;
+	margin-right: 1px;
+	margin-left: 2px;
+	margin-top: 3px;
+	-webkit-box-shadow: inset 0 0 3px #000;
+	-ms-box-shadow: inset 0 0 3px #000;
+	box-shadow: inset 0 0 3px #000;
+	text-align: center;
+}	
+	
+.bigdiv {	
+	background: #d3c7b1;
+	float: left;
+	overflow: auto;
+	border: 1px solid black;
+	overflow: hidden;
+	resize: both;
+	width: 160px;
+	height: 120px;
+	min-width: 105px;
+	min-height: 70px;
+	max-width: 900px;
+	max-height: 600px;
+}	
+	
+.hd {	
+	text-align: center;
+	font-weight: bold;
+	border: 1px solid #9a4832;
+	background-color: #c28f48;
+	-webkit-box-shadow: inset 0 0 3px #000;
+	-ms-box-shadow: inset 0 0 3px #000;
+	box-shadow: inset 0 0 3px #000;
+}	
+	
+.ctrue {	
+	background-color: green;
+	width: 20px;
+	height: 20px;
+	color: green;
+	display: inline-block;
+}	
+	
+.cfalse {	
+	background-color: red;
+	text-align: center;
+	width: 20px;
+	height: 20px;
+	color: red;
+	display: inline-block;
+}
