@@ -9,6 +9,7 @@
 	<title>Web monitor</title>
 	<script src="script/jquery-3.2.1.min.js"></script>
 	<script src="script/main.js"></script>
+	<script src="script/vanilla-picker.min.js"></script>
 </head>
 
 <body>
@@ -20,7 +21,7 @@
 	<span id="idfield"></span>
 	<hr>
 	<div id="context-menu">
-		<div class="item"><input id="colorform" style="width: 100px;" type="text" value="pink" /> </div>
+		<div class="item" id="picker"> Pick color</div>
 		<div class="item" id="cicc"> Change Color </div>
 		 <div class="item" id="ciml"> Move Left </div>	
 		<div class="item"><input id="tagindex" style="width: 40px;" type="number" value="" /></div>		  
@@ -44,7 +45,14 @@
 	
 	setTimeout(addListenerBigDiv, 0);
 	setTimeout(addTagIdListener, 0);
+	
+	var parent = document.querySelector('#picker');
+    var picker = new Picker(parent);
+    picker.onChange = function(color) {
+        parent.style.background = color.rgbaString;
+    };
 	</script>
+
 </body>
 
 </html>

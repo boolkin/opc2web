@@ -1,4 +1,4 @@
-var getJSON = function(url, callback) {
+п»їvar getJSON = function(url, callback) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'json';
@@ -16,17 +16,17 @@ setInterval(function() {
     getJSON('http://localhost:45455', function(err, data) {
         var taglist = "";
         var state = "red";
-        var speed = parseFloat(data.tag0.replace(",", ".")); // скорость передается нулевым тэгом
+        var speed = parseFloat(data.tag0.replace(",", ".")); // СЃРєРѕСЂРѕСЃС‚СЊ РїРµСЂРµРґР°РµС‚СЃСЏ РЅСѓР»РµРІС‹Рј С‚СЌРіРѕРј
         if (speed > 0) {
             state = "green";
-            $("#favicon").attr("href", "img/green.png"); //меняется иконка сайта если скорость больше нуля
+            $("#favicon").attr("href", "img/green.png"); //РјРµРЅСЏРµС‚СЃСЏ РёРєРѕРЅРєР° СЃР°Р№С‚Р° РµСЃР»Рё СЃРєРѕСЂРѕСЃС‚СЊ Р±РѕР»СЊС€Рµ РЅСѓР»СЏ
         } else {
             state = "red";
-            $("#favicon").attr("href", "img/red.png"); //меняется иконка сайта если скорость меньше нуля
+            $("#favicon").attr("href", "img/red.png"); //РјРµРЅСЏРµС‚СЃСЏ РёРєРѕРЅРєР° СЃР°Р№С‚Р° РµСЃР»Рё СЃРєРѕСЂРѕСЃС‚СЊ РјРµРЅСЊС€Рµ РЅСѓР»СЏ
         }
         for (key in data) {
             let value = '';
-            var elem = document.getElementById(key); // проходимся по JSON строке и проверяем есть ли на странице элементы которые передаются с сервера 
+            var elem = document.getElementById(key); // РїСЂРѕС…РѕРґРёРјСЃСЏ РїРѕ JSON СЃС‚СЂРѕРєРµ Рё РїСЂРѕРІРµСЂСЏРµРј РµСЃС‚СЊ Р»Рё РЅР° СЃС‚СЂР°РЅРёС†Рµ СЌР»РµРјРµРЅС‚С‹ РєРѕС‚РѕСЂС‹Рµ РїРµСЂРµРґР°СЋС‚СЃСЏ СЃ СЃРµСЂРІРµСЂР° 
             if (elem) {
                 if (data[key] == "true") {
                     document.getElementById(key).className = "ctrue";
@@ -35,19 +35,19 @@ setInterval(function() {
                     document.getElementById(key).className = "cfalse";
                     value = "F";
                 } else value = Math.round(parseFloat(data[key].replace(",", ".")));
-                document.getElementById(key).innerHTML = value; // если есть такой элемент с ключем, то записываем в него значение 
-                //if (key = "tag7") document.getElementById(key).innerHTML = data[key]; // Толщина, то есть 7 тэг нужно отображать без округления
+                document.getElementById(key).innerHTML = value; // РµСЃР»Рё РµСЃС‚СЊ С‚Р°РєРѕР№ СЌР»РµРјРµРЅС‚ СЃ РєР»СЋС‡РµРј, С‚Рѕ Р·Р°РїРёСЃС‹РІР°РµРј РІ РЅРµРіРѕ Р·РЅР°С‡РµРЅРёРµ 
+                //if (key = "tag7") document.getElementById(key).innerHTML = data[key]; // РўРѕР»С‰РёРЅР°, С‚Рѕ РµСЃС‚СЊ 7 С‚СЌРі РЅСѓР¶РЅРѕ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊ Р±РµР· РѕРєСЂСѓРіР»РµРЅРёСЏ
             } else {
-                taglist = taglist + "<span id='" + key + "' onmouseover = showid(this.id)>" + key + ":" + data[key] + " | </span> "; //если элемента нет, то создаем его внизу в специальном блоке 
+                taglist = taglist + "<span id='" + key + "' onmouseover = showid(this.id)>" + key + ":" + data[key] + " | </span> "; //РµСЃР»Рё СЌР»РµРјРµРЅС‚Р° РЅРµС‚, С‚Рѕ СЃРѕР·РґР°РµРј РµРіРѕ РІРЅРёР·Сѓ РІ СЃРїРµС†РёР°Р»СЊРЅРѕРј Р±Р»РѕРєРµ 
                 tagspanel.innerHTML = taglist;
             }
         }
         document.getElementById("pole0").style.backgroundColor = state;
     });
 }, 1000);
-var i = 0; // Глобальная переменная котороя хранит в себе порядковый номер тэга который будет добален при следующем вызове функции addDiv
+var i = 0; // Р“Р»РѕР±Р°Р»СЊРЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ РєРѕС‚РѕСЂРѕСЏ С…СЂР°РЅРёС‚ РІ СЃРµР±Рµ РїРѕСЂСЏРґРєРѕРІС‹Р№ РЅРѕРјРµСЂ С‚СЌРіР° РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ РґРѕР±Р°Р»РµРЅ РїСЂРё СЃР»РµРґСѓСЋС‰РµРј РІС‹Р·РѕРІРµ С„СѓРЅРєС†РёРё addDiv
 var j = 0;
-// Функция добавления блока тэга, котороя вызывается при двойном щелчке по большому блоку
+// Р¤СѓРЅРєС†РёСЏ РґРѕР±Р°РІР»РµРЅРёСЏ Р±Р»РѕРєР° С‚СЌРіР°, РєРѕС‚РѕСЂРѕСЏ РІС‹Р·С‹РІР°РµС‚СЃСЏ РїСЂРё РґРІРѕР№РЅРѕРј С‰РµР»С‡РєРµ РїРѕ Р±РѕР»СЊС€РѕРјСѓ Р±Р»РѕРєСѓ
 function addDiv(obj) {
     let div = document.createElement('div');
     div.className = "newdiv";
@@ -59,7 +59,7 @@ function addDiv(obj) {
     document.getElementById("context-menu").classList.remove("active");
     addTagIdListener();
 }
-// Функция добавления большого блока куда будут помещаться блоки тэгов. Функция вызывается при клике по плюсику вверху страницы
+// Р¤СѓРЅРєС†РёСЏ РґРѕР±Р°РІР»РµРЅРёСЏ Р±РѕР»СЊС€РѕРіРѕ Р±Р»РѕРєР° РєСѓРґР° Р±СѓРґСѓС‚ РїРѕРјРµС‰Р°С‚СЊСЃСЏ Р±Р»РѕРєРё С‚СЌРіРѕРІ. Р¤СѓРЅРєС†РёСЏ РІС‹Р·С‹РІР°РµС‚СЃСЏ РїСЂРё РєР»РёРєРµ РїРѕ РїР»СЋСЃРёРєСѓ РІРІРµСЂС…Сѓ СЃС‚СЂР°РЅРёС†С‹
 function addBigDiv() {
     let elements = document.querySelectorAll('div.bigdiv');
     j = elements.length;
@@ -78,11 +78,11 @@ function showid(tag) {
 
 function savecode() {
     localStorage.setItem('Web_blocks_opc', document.getElementById('workpanel').innerHTML);
-    alert("Сохранен на локальной машине");
+    alert("РЎРѕС…СЂР°РЅРµРЅ РЅР° Р»РѕРєР°Р»СЊРЅРѕР№ РјР°С€РёРЅРµ");
 }
 
 function showtextarea() {
-    workpanel.innerHTML = "<textarea rows='10' cols='100' id='import'></textarea><br><input type='button' onclick='importcode ()' value='Импортировать'> <a target='_blank' href='http://localhost/server_screen.txt'> Взять экран с сервера</a> <br><a href='http://localhost/editor.html'> Назад</a> ";
+    workpanel.innerHTML = "<textarea rows='10' cols='100' id='import'></textarea><br><input type='button' onclick='importcode ()' value='РРјРїРѕСЂС‚РёСЂРѕРІР°С‚СЊ'> <a target='_blank' href='http://localhost/server_screen.txt'> Р’Р·СЏС‚СЊ СЌРєСЂР°РЅ СЃ СЃРµСЂРІРµСЂР°</a> <br><a href='http://localhost/editor.html'> РќР°Р·Р°Рґ</a> ";
 }
 
 function importcode() {
@@ -104,7 +104,7 @@ function download(filename, text) {
 }
 
 function colordiv(el) {
-    el.style.backgroundColor = document.getElementById("colorform").value;
+    el.style.backgroundColor = document.getElementById("picker").style.backgroundColor;
     document.getElementById("context-menu").classList.remove("active");
 }
 
@@ -134,7 +134,7 @@ function addListenerBigDiv() {
     [].forEach.call(elem, function(el) {
         el.addEventListener("contextmenu", function(event) {
             event.preventDefault();
-            var cm = document.querySelector("#context-menu");
+            var cm = document.getElementById("context-menu");
             cm.style.top = (event.clientY +cm.offsetHeight > window.innerHeight) ? window.innerHeight - cm.offsetHeight + "px" : event.clientY + "px";
             cm.style.left = (event.clientX + cm.offsetWidth > window.innerWidth) ? window.innerWidth - cm.offsetWidth + "px" : event.clientX +"px";
             cm.classList.add("active");
@@ -146,6 +146,7 @@ function addListenerBigDiv() {
         });
     });
 }
+
 //window.addEventListener("click", function(){
 //	document.getElementById("context-menu").classList.remove("active");	
 //});
