@@ -19,10 +19,10 @@ setInterval(function() {
         var speed = parseFloat(data.tag0.replace(",", ".")); // скорость передается нулевым тэгом
         if (speed > 0) {
             state = "green";
-            $("#favicon").attr("href", "img/green.png"); //меняется иконка сайта если скорость больше нуля
+            document.querySelector("link[rel*='icon']").href = "img/green.png"; //меняется иконка сайта если скорость больше нуля
         } else {
             state = "red";
-            $("#favicon").attr("href", "img/red.png"); //меняется иконка сайта если скорость меньше нуля
+            document.querySelector("link[rel*='icon']").href = "img/red.png"; //меняется иконка сайта если скорость меньше нуля
         }
         for (key in data) {
             let value = '';
