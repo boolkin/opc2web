@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+   <head>
+      <link id="favicon" rel="shortcut icon" type="image/png" href="red.png" />
+      <meta charset="utf-8">
+      <title>OPC2WEB monitor</title>
+      
+      <script>
+         var getJSON = function(url, callback) {
+         
+             var xhr = new XMLHttpRequest();
+             xhr.open('GET', url, true);
+             xhr.responseType = 'json';
+             
+             xhr.onload = function() {
+             
+                 var status = xhr.status;
+                 
+                 if (status == 200) {
+                     callback(null, xhr.response);
+                 } else {
+                     callback(status);
+                 }
+             };
+             
+             xhr.send();
+         };
+         
+
+ setInterval(function(){
+         getJSON('http://localhost:45455',  function(err, data) {
+			 var taglist="";
+            var state = "red";
+         	var speed = parseFloat(data.tag0.replace(",", ".")); // скорость передается нулевым тэгом
+         	if (speed>0) {
+         		state = "green";
+         		document.querySelector("link[rel*='icon']").href = "green.png"; //меняется иконка сайта если скорость больше нуля
+         		} else  {
+         		state = "red";
+         		document.querySelector("link[rel*='icon']").href = "red.png"; //меняется иконка сайта если скорость меньше нуля
+         	} 
+         
+			for (key in data) {
+				let value='';
+				let svgdoc = document.getElementById("svgfile").contentDocument;
+				let elem = svgdoc.getElementById(key); 
+				
+				if (elem) {
+					if (data[key]=="true") {
+						elem.style.fill = "green"; //заполняем элемент зеленым цветом
+						}
+					else if (data[key]=="false") {
+						elem.style.fill = "red";
+						}
+					else value = Math.round(parseFloat(data[key].replace(",","."))); 
+					elem.innerHTML = value; // если есть такой элемент с ключем, то записываем в него значение
+				}
+				else {
+					taglist = taglist +"<span id='" + key + "'>" + key + ":"+data[key]+" | </span> "; //если элемента нет, то создаем его внизу в специальном блоке 
+					tagspanel.innerHTML = taglist;
+					value = Math.round(parseFloat(data[key].replace(",",".")));
+				}
+				//рисуем изменяющийся квадрат
+				let idmaxheight = "maxheight-"+key; 
+				let idheight = "height-"+key;
+				let maxrect = svgdoc.getElementById(idmaxheight);
+				if (maxrect) {let mh = svgdoc.getElementById(idmaxheight).getAttribute('height');
+				svgdoc.getElementById(idheight).style.height = mh-value ;}
+					
+         	}		
+  
+				
+         });
+         }, 1000);
+         
+
+      </script>
+   </head>
+   <body>
+   	<div align="center" style ="width:100%; font-size: 2em; font-weight: bold; display:inline-block;" >OPC2WEB monitor</div>    
+      <hr>
+      
+
+	 <object id = "svgfile" class="svgClass" type="image/svg+xml" data="drawsvg.svg"></object>
+	 
+
+
+	<div style="position:absolute; bottom:0; left:0; display: block;" id="tagspanel">tags</div>
+
+   </body>
+   
+</html>
